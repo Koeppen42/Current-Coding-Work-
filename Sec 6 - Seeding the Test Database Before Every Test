@@ -1,0 +1,41 @@
+import { defineConfig } from 'cypress';
+
+import { seed } from './prisma/seed-test';
+
+export default defineConfig({
+  e2e: {
+    baseUrl: 'http://localhost:3000',
+    setupNodeEvents(on, config) {
+      // implement node event listeners here
+      on('task', {
+        async seedDatabase() {
+          await seed();
+          return null;
+        }
+      })
+    },
+  },
+});
+
+
+
+
+
+
+
+
+
+
+
+
+/// <reference types="Cypress" />
+
+describe('Takeaways', () => {
+  beforeEach(() => {
+    cy.task('seedDatabase');
+  });
+  it('Should display a list of fetched takeaways', () => {
+    cy.visit('/');
+    cy.get('[data-cy="takeaway-item"]').should('have.length', 2);
+  });
+});
